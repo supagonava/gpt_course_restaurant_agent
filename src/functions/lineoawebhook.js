@@ -20,7 +20,8 @@ app.http("lineoawebhook", {
         const userExists = await checkUserExists(lineUserID);
         if (!userExists) await createUser(lineUserID, userProfile.displayName);
 
-        const userMessages = (await getUserMessages(lineUserID)) ?? [];
+        let userMessages = Array.from((await getUserMessages(lineUserID)) ?? []);
+        userMessages = userMessages.slice(-10);
         userMessages.push({
             role: "user",
             content: [{ text: `${userMessage}`.toLowerCase(), type: "text" }],
