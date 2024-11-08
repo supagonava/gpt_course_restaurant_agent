@@ -147,17 +147,6 @@ async function getUserMessages(lineId) {
 async function updateUserMessage(lineId, newMessage) {
     return new Promise(async (resolve, reject) => {
         try {
-            // ดึงข้อความปัจจุบันของผู้ใช้
-            const currentMessages = await getUserMessages(lineId);
-
-            if (!Array.isArray(currentMessages)) {
-                resolve({ success: false, message: "Failed to retrieve user messages." });
-                return;
-            }
-
-            // เพิ่มข้อความใหม่เข้าไปใน array ของข้อความปัจจุบัน
-            currentMessages.push(newMessage);
-
             const db = new sqlite3.Database("./restaurant.db");
 
             const query = `
@@ -166,7 +155,7 @@ async function updateUserMessage(lineId, newMessage) {
                 WHERE lineid = ?;
             `;
 
-            db.run(query, [JSON.stringify(currentMessages), lineId], function (err) {
+            db.run(query, [JSON.stringify(newMessage), lineId], function (err) {
                 db.close();
                 if (err) {
                     reject(err);
