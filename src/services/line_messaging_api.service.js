@@ -16,7 +16,7 @@ const getUserProfile = async ({ lineID }) => {
     };
 };
 
-const replyMessage = async ({ messageType = "flex", messageText = "", contents = [], replyToken = "", altText = "" }) => {
+const replyMessage = async ({ messageType = "flex", messageText = "", contents = {}, replyToken = "", altText = "" }) => {
     const headers = {
         "Content-Type": "application/json",
         Authorization: `Bearer ${process.env?.CHANNEL_SECRET_TOKEN}`,
