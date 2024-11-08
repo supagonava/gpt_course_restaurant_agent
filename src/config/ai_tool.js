@@ -58,24 +58,14 @@ const COMPLETION_TEMPLATE = {
             type: "function",
             function: {
                 name: "confirm_order",
+                description: "ยืนยันออเดอร์โดยรับค่า ยืนยัน หรือ ยกเลิก หรือต้องการสั่งเพิ่ม",
                 strict: true,
                 parameters: {
                     type: "object",
-                    required: ["action", "order_id"],
-                    properties: {
-                        action: {
-                            enum: ["confirm", "cancel", "add_more"],
-                            type: "string",
-                            description: "การกระทำที่ต้องการเลือก: ยืนยัน, ยกเลิก หรือ ต้องการสั่งเพิ่ม",
-                        },
-                        order_id: {
-                            type: "string",
-                            description: "รหัสของออเดอร์ที่ต้องการยืนยันหรือยกเลิก",
-                        },
-                    },
                     additionalProperties: false,
+                    properties: {},
+                    required: [],
                 },
-                description: "ยืนยันออเดอร์โดยรับค่า ยืนยัน หรือ ยกเลิก หรือต้องการสั่งเพิ่ม",
             },
         },
     ],

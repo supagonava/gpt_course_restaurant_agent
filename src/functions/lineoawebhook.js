@@ -1,6 +1,6 @@
 const { app } = require("@azure/functions");
 const { replyMessage, getUserProfile } = require("../services/line_messaging_api.service");
-const { checkUserExists, createUser, getUserMessages, updateUserMessage } = require("../services/database.services");
+const { checkUserExists, createUser, getUserMessages, updateUserMessage, getUserByLineId } = require("../services/database.services");
 const APIAxios = require("../services/axios.service");
 const { submitMessageToGPT } = require("../services/gpt.service");
 
@@ -16,6 +16,7 @@ app.http("lineoawebhook", {
         const lineUserID = event.source.userId;
         const userMessage = event.message?.text ?? "Empty Message";
 
+        const dbUser = await getUserByLineId(lineUserID);
         const userProfile = await getUserProfile(lineUserID);
         const userExists = await checkUserExists(lineUserID);
         if (!userExists) await createUser(lineUserID, userProfile.displayName);
@@ -26,11 +27,12 @@ app.http("lineoawebhook", {
             role: "user",
             content: [{ text: `${userMessage}`.toLowerCase(), type: "text" }],
         });
-        const submitToGptResponse = await submitMessageToGPT({ messages: userMessages });
+        const submitToGptResponse = await submitMessageToGPT({ userID: dbUser.id, messages: userMessages });
 
         const messageToReply = submitToGptResponse.message_to_reply;
         const replyResponseText = await replyMessage({ messageType: "text", messageText: messageToReply, replyToken: replyToken });
         await updateUserMessage(lineUserID, submitToGptResponse.messages);
+
         // Reply As Flex message
         // const flexMessageBody = require("../sample-message/first_flex_message.json");
         // flexMessageBody.footer.contents[0].action.label = userMessage;

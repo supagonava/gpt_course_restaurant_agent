@@ -1,5 +1,18 @@
 const sqlite3 = require("sqlite3");
 
+async function getUserByLineId(lineId) {
+    return new Promise((resolve, reject) => {
+        const db = new sqlite3.Database("./restaurant.db");
+        db.get("SELECT * FROM tb_user WHERE lineid = ?", [lineId], (err, row) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(row);
+            }
+        });
+    });
+}
+
 async function viewAllFoodItems() {
     return new Promise((resolve, reject) => {
         const db = new sqlite3.Database("./restaurant.db");
@@ -32,9 +45,7 @@ async function addToCart(idUser, idMenu, quantity = 1) {
 
         const query = `
             INSERT INTO tb_cart (id_user, id_menu, qty)
-            VALUES (?, ?, ?)
-            ON CONFLICT(id_user, id_menu) 
-            DO UPDATE SET qty = qty + excluded.qty;
+            VALUES (?, ?, ?);
         `;
 
         db.run(query, [idUser, idMenu, quantity], function (err) {
@@ -62,6 +73,28 @@ async function viewCart(idUser) {
             JOIN tb_menu ON tb_cart.id_menu = tb_menu.id
             WHERE tb_cart.id_user = ?
             ORDER BY tb_menu.id ASC;
+        `;
+
+        db.all(query, [idUser], (err, rows) => {
+            db.close();
+            if (err) {
+                reject(err);
+                return;
+            }
+            // แปลง rows เป็น array ของ text
+            const textOutput = rows.map((row) => row.text_output).join("\n");
+            resolve(textOutput);
+        });
+    });
+}
+
+async function clearCart(idUser) {
+    return new Promise((resolve, reject) => {
+        const db = new sqlite3.Database("./restaurant.db");
+
+        const query = `
+            DELETE FROM "tb_cart"
+            WHERE tb_cart.id_user = ?;
         `;
 
         db.all(query, [idUser], (err, rows) => {
@@ -169,4 +202,4 @@ async function updateUserMessage(lineId, newMessage) {
     });
 }
 
-module.exports = { viewAllFoodItems, addToCart, viewCart, createUser, getUserMessages, updateUserMessage, checkUserExists };
+module.exports = { clearCart, viewAllFoodItems, addToCart, viewCart, createUser, getUserMessages, updateUserMessage, checkUserExists, getUserByLineId };
