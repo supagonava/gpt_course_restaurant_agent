@@ -1,7 +1,7 @@
 const LINE_REPLY_URL = "https://api.line.me/v2/bot/message/reply";
 const APIAxios = require("./axios.service");
 
-const getUserProfile = async ({ lineID }) => {
+const getUserProfile = async (lineID) => {
     const headers = {
         "Content-Type": "application/json",
         Authorization: `Bearer ${process.env?.CHANNEL_SECRET_TOKEN}`,
