@@ -8,8 +8,10 @@
   },
   "dependencies": {
     "@azure/functions": "^4.0.0",
+    "axios": "^1.7.7",
+    "crypto": "^1.0.1",
     "openai": "^4.69.0",
     "sqlite3": "^5.1.7"
   },
-  "main": "src/{index.js,functions/*.js}"
+  "main": "src/**/*.js"
 }
