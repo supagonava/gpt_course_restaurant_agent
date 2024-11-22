@@ -38,7 +38,7 @@ const getContentByRead = async ({ formUrl = "" }) => {
     } else {
     }
 
-    return textContent;
+    return { textContent };
 };
 
 const getContentByLayout = async ({ formUrl = "" }) => {

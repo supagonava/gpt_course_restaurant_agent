@@ -5,7 +5,7 @@ const { viewAllFoodItems, addToCart, viewCart, clearCart } = require("./database
 const submitMessageToGPT = async ({ userID, messages }) => {
     const allFoods = await viewAllFoodItems();
     const payload_template = { ...COMPLETION_TEMPLATE };
-    payload_template.messages[0].content += `\n รายการอาหาร ${allFoods}`;
+    payload_template.messages[0].content += `\nร้านของคุณมีรายการอาหารต่อไปนี้ ${allFoods}`;
     payload_template.messages = payload_template.messages.concat(messages);
 
     const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });

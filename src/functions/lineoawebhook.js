@@ -9,7 +9,7 @@ const {
 } = require("../services/database.services");
 const APIAxios = require("../services/axios.service");
 const { submitMessageToGPT } = require("../services/gpt.service");
-const { getContentByLayout } = require("../services/form_regonizer.service");
+const { getContentByLayout, getContentByRead } = require("../services/form_regonizer.service");
 
 app.http("lineoawebhook", {
     methods: ["POST"],
@@ -36,7 +36,8 @@ app.http("lineoawebhook", {
             let messageToReply = "DefaultMessage";
             if (event?.message?.type === "image") {
                 const imageBuffer = await getImageContent({ messageId: messasgeID });
-                const { tables, textContent } = await getContentByLayout({ formUrl: imageBuffer });
+                const { textContent } = await getContentByLayout({ formUrl: imageBuffer });
+                context.debug(textContent);
                 userMessage = `ลูกค้าเพิ่มสินค้าเข้าตะกร้าดังตารางนี้ \n\n ${textContent}`;
             }
 
