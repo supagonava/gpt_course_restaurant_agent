@@ -21,6 +21,7 @@ app.http("lineoawebhook", {
 
             const event = bodyJson.events[0];
             if (event?.source?.groupId) {
+                console.log(`GROUPID: ${event?.source?.groupId}`);
                 return { body: null, status: 200 };
             }
 
