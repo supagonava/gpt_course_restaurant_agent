@@ -51,7 +51,7 @@ const getContentByLayout = async ({ formUrl = "" }) => {
     const { pages, tables } = await poller.pollUntilDone();
 
     let textContent = "";
-    textContent += getContentByPage({ pages });
+    // textContent += getContentByPage({ pages });
 
     if (tables.length > 0) {
         let tableCounter = 1;
@@ -65,7 +65,7 @@ const getContentByLayout = async ({ formUrl = "" }) => {
                 if (cell.columnIndex === columnCount - 1) {
                     textContent += "\n";
                 } else {
-                    textContent += ",";
+                    textContent += ", ";
                 }
             }
         }

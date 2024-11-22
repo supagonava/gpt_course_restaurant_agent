@@ -3,7 +3,9 @@ const OpenAI = require("openai");
 const { viewAllFoodItems, addToCart, viewCart, clearCart } = require("./database.services");
 
 const submitMessageToGPT = async ({ userID, messages }) => {
+    const allFoods = await viewAllFoodItems();
     const payload_template = { ...COMPLETION_TEMPLATE };
+    payload_template.messages[0].content += `\n รายการอาหาร ${allFoods}`;
     payload_template.messages = payload_template.messages.concat(messages);
 
     const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
@@ -25,10 +27,16 @@ const submitMessageToGPT = async ({ userID, messages }) => {
             } else if (toolName === "add_to_cart") {
                 await addToCart(userID, parseInt(toolArg?.food_id), toolArg?.quantity);
                 toolResponseText = "เพิ่มสำเร็จ";
+            } else if (toolName === "view_cart") {
+                const cartItems = await viewCart(userID);
+                toolResponseText = `มีรายการต่อไปนี้ในตะกร้า ${cartItems}`;
+            } else if (toolName === "clear_cart") {
+                await clearCart(userID);
+                toolResponseText = `ล้างรายการในตะกร้าแล้ว`;
             } else if (toolName === "confirm_order") {
                 const cartItems = await viewCart(userID);
                 await clearCart(userID);
-                toolResponseText = `สั่งรายการต่อไปนี้แล้ว ${cartItems}`;
+                toolResponseText = `สั่งรายการต่อไปนี้แล้ว ${cartItems} พร้อมบอกผู้ใช้ว่าตะกร้าของคุณว่างเปล่าแล้ว`;
             }
             payload_template.messages.push({
                 role: "tool",

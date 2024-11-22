@@ -12,7 +12,7 @@ const COMPLETION_TEMPLATE = {
         },
     ],
     temperature: 0.3,
-    max_tokens: 2048,
+    max_tokens: 1000,
     top_p: 1,
     frequency_penalty: 0,
     presence_penalty: 0,
@@ -59,6 +59,34 @@ const COMPLETION_TEMPLATE = {
             function: {
                 name: "confirm_order",
                 description: "ยืนยันออเดอร์โดยรับค่า ยืนยัน หรือ ยกเลิก หรือต้องการสั่งเพิ่ม",
+                strict: true,
+                parameters: {
+                    type: "object",
+                    additionalProperties: false,
+                    properties: {},
+                    required: [],
+                },
+            },
+        },
+        {
+            type: "function",
+            function: {
+                name: "view_cart",
+                description: "ดูรายการในตะกร้า",
+                strict: true,
+                parameters: {
+                    type: "object",
+                    additionalProperties: false,
+                    properties: {},
+                    required: [],
+                },
+            },
+        },
+        {
+            type: "function",
+            function: {
+                name: "clear_cart",
+                description: "ล้างรายการในตะกร้า",
                 strict: true,
                 parameters: {
                     type: "object",

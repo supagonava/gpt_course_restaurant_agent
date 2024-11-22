@@ -20,7 +20,6 @@ async function viewAllFoodItems() {
             SELECT 
                 id || ' | ' || 
                 name || ' | ' || 
-                COALESCE(description, '-') || ' | ' || 
                 printf("%.2f", price) as text_output
             FROM tb_menu
             ORDER BY id ASC;
@@ -202,4 +201,14 @@ async function updateUserMessage(lineId, newMessage) {
     });
 }
 
-module.exports = { clearCart, viewAllFoodItems, addToCart, viewCart, createUser, getUserMessages, updateUserMessage, checkUserExists, getUserByLineId };
+module.exports = {
+    clearCart,
+    viewAllFoodItems,
+    addToCart,
+    viewCart,
+    createUser,
+    getUserMessages,
+    updateUserMessage,
+    checkUserExists,
+    getUserByLineId,
+};
