@@ -43,7 +43,7 @@ const getContentByRead = async ({ formUrl = "" }) => {
 
 const getContentByLayout = async ({ formUrl = "" }) => {
     const client = new DocumentAnalysisClient(endpoint, new AzureKeyCredential(key));
-    if (formUrl.startsWith("data:")) {
+    if (typeof formUrl === "string" && formUrl.startsWith("data:")) {
         formUrl = convertBase64ToBuffer(formUrl);
     }
 

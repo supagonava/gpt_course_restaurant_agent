@@ -1,6 +1,35 @@
 const LINE_REPLY_URL = "https://api.line.me/v2/bot/message/reply";
 const APIAxios = require("./axios.service");
 
+const getImageContent = async ({ messageId = "", returnType = "base64" }) => {
+    try {
+        // LINE Messaging API endpoint สำหรับดึงรูปภาพ
+        const url = `https://api-data.line.me/v2/bot/message/${messageId}/content`;
+
+        // ดึงรูปภาพจาก LINE API
+        const response = await APIAxios({
+            method: "get",
+            url: url,
+            responseType: "arraybuffer", // สำคัญ: ต้องระบุ responseType เป็น arraybuffer
+            headers: { Authorization: `Bearer ${process.env.CHANNEL_SECRET_TOKEN}` },
+        });
+        if (returnType === "base64") {
+            // แปลงข้อมูลเป็น base64
+            const base64Image = Buffer.from(response.data, "binary").toString("base64");
+
+            // เพิ่ม data URI scheme สำหรับ base64
+            const contentType = response.headers["content-type"];
+            const base64WithPrefix = `data:${contentType};base64,${base64Image}`;
+
+            return base64WithPrefix;
+        }
+        return Buffer.from(response.data, "binary");
+    } catch (error) {
+        console.error("Error getting image from LINE:", error);
+        throw new Error(`Failed to get image content: ${error.message}`);
+    }
+};
+
 const getUserProfile = async (lineID) => {
     const headers = {
         "Content-Type": "application/json",
@@ -41,5 +70,4 @@ const replyMessage = async ({ messageType = "flex", messageText = "", contents =
         return { status: "fail", message: String(error) };
     }
 };
-
-module.exports = { replyMessage, getUserProfile };
+module.exports = { replyMessage, getUserProfile, getImageContent };
