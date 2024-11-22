@@ -7,7 +7,6 @@ const {
     updateUserMessage,
     getUserByLineId,
 } = require("../services/database.services");
-const APIAxios = require("../services/axios.service");
 const { submitMessageToGPT } = require("../services/gpt.service");
 const { getContentByLayout, getContentByRead } = require("../services/form_regonizer.service");
 
@@ -21,6 +20,10 @@ app.http("lineoawebhook", {
             context.debug(bodyJson);
 
             const event = bodyJson.events[0];
+            if (event?.source?.groupId) {
+                return { body: null, status: 200 };
+            }
+
             const replyToken = event.replyToken;
             const lineUserID = event.source.userId;
             let userMessage = event.message?.text ?? "Empty Message";

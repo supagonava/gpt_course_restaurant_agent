@@ -70,4 +70,32 @@ const replyMessage = async ({ messageType = "flex", messageText = "", contents =
         return { status: "fail", message: String(error) };
     }
 };
-module.exports = { replyMessage, getUserProfile, getImageContent };
+
+// line_messaging_api.service.js
+const pushMessageToGroup = async ({ to = "Cc1b7368b252b717b11f15eac12383526", messageText = "" }) => {
+    const headers = {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${process.env?.CHANNEL_SECRET_TOKEN}`,
+    };
+
+    try {
+        await APIAxios.post(
+            "https://api.line.me/v2/bot/message/push",
+            {
+                to: to,
+                messages: [
+                    {
+                        type: "text",
+                        text: messageText,
+                    },
+                ],
+            },
+            { headers },
+        );
+        return { status: "success" };
+    } catch (error) {
+        console.error("Error pushing message:", error);
+        throw error;
+    }
+};
+module.exports = { replyMessage, getUserProfile, getImageContent, pushMessageToGroup };

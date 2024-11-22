@@ -1,6 +1,7 @@
 const { COMPLETION_TEMPLATE } = require("../config/ai_tool");
 const OpenAI = require("openai");
 const { viewAllFoodItems, addToCart, viewCart, clearCart } = require("./database.services");
+const { pushMessageToGroup } = require("./line_messaging_api.service");
 
 const submitMessageToGPT = async ({ userID, messages }) => {
     const allFoods = await viewAllFoodItems();
@@ -35,6 +36,7 @@ const submitMessageToGPT = async ({ userID, messages }) => {
                 toolResponseText = `ล้างรายการในตะกร้าแล้ว`;
             } else if (toolName === "confirm_order") {
                 const cartItems = await viewCart(userID);
+                await pushMessageToGroup({ messageText: `มีออเดอร์เข้า ${cartItems} โดยผู้ใช้รหัส ${userID}` });
                 await clearCart(userID);
                 toolResponseText = `สั่งรายการต่อไปนี้แล้ว ${cartItems} พร้อมบอกผู้ใช้ว่าตะกร้าของคุณว่างเปล่าแล้ว`;
             }

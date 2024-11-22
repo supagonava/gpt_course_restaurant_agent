@@ -64,9 +64,8 @@ async function viewCart(idUser) {
 
         const query = `
             SELECT 
-                tb_menu.name || ' | ' || 
-                COALESCE(tb_menu.description, '-') || ' | ' || 
-                printf("%.2f", tb_menu.price) || ' | ' || 
+                tb_menu.name || 'ราคา :' || 
+                printf("%.2f", tb_menu.price) || 'จำนวน :' || 
                 tb_cart.qty as text_output
             FROM tb_cart
             JOIN tb_menu ON tb_cart.id_menu = tb_menu.id
